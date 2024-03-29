@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -62,10 +64,10 @@ fun MyApp(modifier: Modifier = Modifier) {
 @Composable
 fun Greetings(
     modifier: Modifier = Modifier,
-    names: List<String> = listOf("Bittu", "saini")
+    names: List<String> = List(1000) { "$it" }
 ) {
-    Column(modifier = Modifier.padding(vertical = 4.dp)) {
-        for (name in names) {
+    LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
+        items(items = names) { name ->
             Greeting(name = name)
         }
     }
@@ -73,8 +75,8 @@ fun Greetings(
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    val expanded = remember { mutableStateOf(false) }
-    val extraPadding = if (expanded.value) 50.dp else 0.dp
+    var expanded by remember { mutableStateOf(false) }
+    val extraPadding = if (expanded) 50.dp else 0.dp
 
     Surface(
         color = MaterialTheme.colorScheme.primary,
@@ -95,9 +97,9 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 Text(text = "$name!")
             }
             ElevatedButton(onClick = {
-                expanded.value = !expanded.value
+                expanded = !expanded
             }) {
-                Text(text = if (expanded.value) "Show less" else "Show more")
+                Text(text = if (expanded) "Show less" else "Show more")
 
             }
         }

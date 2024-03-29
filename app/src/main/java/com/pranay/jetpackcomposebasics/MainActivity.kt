@@ -24,12 +24,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,27 +56,39 @@ class MainActivity : ComponentActivity() {
         setContent {
             JetpackComposeBasicsTheme {
                 MyApp(modifier = Modifier.fillMaxSize())
-//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    Greeting(
-//                        name = "Android",
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-//                }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApp(modifier: Modifier = Modifier) {
     var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
-    Surface(modifier) {
-        if (shouldShowOnboarding) {
-            OnBoardingScreen(onContinueClicked = { shouldShowOnboarding = false })
-        } else {
-            Greetings()
+    Scaffold(
+        modifier = modifier, // Apply any external modifiers
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(id = R.string.app_name)) }
+            )
+        }
+    ) { innerPadding ->
+        Surface(modifier = Modifier.padding(innerPadding)) {
+            // Conditional content based on the onboarding flag
+            if (shouldShowOnboarding) {
+                OnBoardingScreen(onContinueClicked = { shouldShowOnboarding = false })
+            } else {
+                Greetings()
+            }
         }
     }
+//    Surface(modifier) {
+//        if (shouldShowOnboarding) {
+//            OnBoardingScreen(onContinueClicked = { shouldShowOnboarding = false })
+//        } else {
+//            Greetings()
+//        }
+//    }
 
 }
 
@@ -119,7 +133,7 @@ fun CardContain(name: String) {
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(bottom = 12.dp)
+                .padding(12.dp)
         ) {
             Text(
                 text = "Hello"
@@ -130,6 +144,12 @@ fun CardContain(name: String) {
                     fontWeight = FontWeight.ExtraBold
                 )
             )
+            if (expanded) {
+                Text(
+                    text = ("Composem ipsum color sit lazy, " +
+                            "padding theme elit, sed do bouncy. ").repeat(4),
+                )
+            }
         }
         IconButton(onClick = { expanded = !expanded }) {
             Icon(
